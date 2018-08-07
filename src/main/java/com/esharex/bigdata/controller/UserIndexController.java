@@ -28,13 +28,7 @@ public class UserIndexController {
     @ResponseBody
     protected  UserIndex addUserIndex(){
         UserIndex userIndex = new UserIndex();
-        userIndex.setId(UUID.randomUUID());
-        userIndex.setAcount("zhangsan11");
-        userIndex.setImei("sdfsdfsfd11");
-        userIndex.setMail("sdfsf.qq.com");
-//        userIndex.setPhone(String.valueOf(1828338383*Math.round(10)));
-        userIndex.setQq("182354475");
-        userIndex.setWebChat("pxk33243234324");
+
         return userIndexService.addUserIndex(userIndex);
     }
 

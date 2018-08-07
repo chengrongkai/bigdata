@@ -1,6 +1,6 @@
 package com.esharex.bigdata.dao;
 
-import com.esharex.bigdata.model.UserInfo;
+import com.esharex.bigdata.model.DeviceInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author: pengxk
  * @create: 2018-07-26 09:55
  **/
-public interface UserInfoRepository    extends JpaRepository<UserInfo, Long> {
+public interface UserInfoRepository    extends JpaRepository<DeviceInfo, Long> {
 }

@@ -11,6 +11,6 @@ import java.util.UUID;
  * @author: pengxk
  * @create: 2018-07-25 11:49
  **/
-public interface UserIndexRepository extends ElasticsearchRepository<UserIndex, UUID> {
+public interface UserIndexRepository extends ElasticsearchRepository<UserIndex, String> {
 
 }

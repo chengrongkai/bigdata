@@ -1,9 +1,8 @@
 package com.esharex.bigdata.service;
 
 import com.esharex.bigdata.dao.UserInfoRepository;
+import com.esharex.bigdata.model.DeviceInfo;
 import com.esharex.bigdata.model.UserIndex;
-import com.esharex.bigdata.model.UserInfo;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
@@ -13,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @program: bigdata
@@ -34,14 +33,15 @@ public class UserInfoService {
     DataSource dataSource;
     @Autowired
     UserIndexService userIndexService;
+
     public boolean addUserIndex(String tableName) {
         Thread thread2 = new Thread(() -> {
-            int count=0;
+            int count = 0;
             //添加所以线程
             try {
                 QueryRunner run = new QueryRunner(dataSource);
                 //查询表中数据总数
-                String sql = "select count(*)  from " + tableName + " where imei!='null'";
+                String sql = "select count(*)  from " + tableName ;
                 Object obj = run.query(sql, new ScalarHandler());
                 int i = Integer.valueOf(obj.toString());
                 logger.info("表中数据总量为：" + i);
@@ -54,17 +54,34 @@ public class UserInfoService {
                 while (currentPag <= pageCount) {
                     try {
                         Long time = System.currentTimeMillis();
-                        String listSql = "select * from " + tableName + " where imei!='null' limit " + (currentPag - 1) * limit + "," + limit;
-                        List<UserInfo> list = run.query(listSql, new BeanListHandler<UserInfo>(UserInfo.class));
-                        list.forEach(userInfo -> {
+                        String listSql = "select * from " + tableName + "   limit " + (currentPag - 1) * limit + "," + limit;
+                        List<DeviceInfo> list = run.query(listSql, new BeanListHandler<DeviceInfo>(DeviceInfo.class));
+                        list.forEach(deviceInfo -> {
                             UserIndex index = new UserIndex();
-                            index.setId(UUID.randomUUID());
-                            index.setImei(userInfo.getImei());
-                            index.setPhone(userInfo.getBind_phone());
-//                            if(!userInfo.getBind_phone().equals("null")&&!userInfo.getBind_phone().equals("0")){
-//                                logger.info("手机号为："+userInfo.getBind_phone());
-//                            }
-                            index.setPlatForm(userInfo.getServername());
+                            index.setId(deviceInfo.getDeviceid());
+                            index.setImei(deviceInfo.getImei());
+                            if (deviceInfo.getPhonenumber() != null && !deviceInfo.getPhonenumber().equals("undefined")) {
+                                index.setPhonenumber(deviceInfo.getPhonenumber());
+                            }
+                            if (deviceInfo.getSimtype() != null && !deviceInfo.getSimtype().equals("undefined")) {
+                                index.setSimtype(deviceInfo.getSimtype());
+                            }
+                            index.setAndroidid(deviceInfo.getAndroidid());
+                            if (deviceInfo.getBtmac().contains("%")) {
+                                index.setBtmac(URLDecoder.decode(deviceInfo.getBtmac()));
+                            } else {
+                                index.setBtmac(deviceInfo.getBtmac());
+                            }
+                            if (deviceInfo.getWlanmac().contains("%")) {
+                                index.setWlanmac(URLDecoder.decode(deviceInfo.getWlanmac()));
+                            } else {
+                                index.setWlanmac(deviceInfo.getWlanmac());
+                            }
+                            index.setIp(deviceInfo.getIp());
+                            index.setDevicetype(deviceInfo.getDevicetype());
+                            index.setDevidshort(deviceInfo.getDevidshort());
+                            index.setCreate_time(deviceInfo.getCreate_time());
+                            index.setUpdate_time(deviceInfo.getUpdate_time());
                             indexList.add(index);
                         });
                         boolean res = userIndexService.batchInserUserIndex(indexList);
@@ -74,11 +91,11 @@ public class UserInfoService {
                             logger.error("批量添加用户索引失败");
                         }
                         currentPag++;
-                        count+=indexList.size();
-                        logger.info(tableName+"批量添加用户索引：" + indexList.size() + "条，耗时" + (System.currentTimeMillis() - time) / 1000 + "秒");
-                        logger.info(tableName+"总共导入：" + count+ "条");
+                        count += indexList.size();
+                        logger.info(tableName + "批量添加用户索引：" + indexList.size() + "条，耗时" + (System.currentTimeMillis() - time) / 1000 + "秒");
+                        logger.info(tableName + "总共导入：" + count + "条");
                         indexList.clear();
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -86,8 +103,13 @@ public class UserInfoService {
                 e.printStackTrace();
             }
 
-        }, "thread2+++++"+tableName);
+        }, "thread2+++++" + tableName);
         thread2.start();
         return true;
+    }
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        String s = "18%3A59%3A36%3A63%3A92%3A7D";
+        System.out.print(s.contains("%"));
     }
 }
