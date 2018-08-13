@@ -20,8 +20,8 @@ public class UserInfoController {
     UserInfoService userInfoService;
     @GetMapping("/add")
     @ResponseBody
-    protected  Boolean addUserIndex(String tableName){
-        return userInfoService.addUserIndex(tableName);
+    protected  Boolean addUserIndex(String tableName,Integer pageNum){
+        return userInfoService.addUserIndex(tableName,pageNum);
     }
 
 }

@@ -37,13 +37,13 @@ public class UserIndexController {
      */
     @GetMapping("/search")
     @ResponseBody
-    protected  String  search(String keyWords){
+    protected  JSONArray  search(String keyWords){
         Iterable<UserIndex> list=userIndexService.search(keyWords);
         JSONArray jsonArray=new JSONArray();
         Iterator<UserIndex> it=list.iterator();
         while (it.hasNext()) {
-                jsonArray.add(JSON.toJSONString(it.next()));
+                jsonArray.add(it.next());
         }
-        return jsonArray.toJSONString();
+        return jsonArray;
     }
 }

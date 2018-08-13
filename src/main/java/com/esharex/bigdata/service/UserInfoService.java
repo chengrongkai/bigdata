@@ -1,5 +1,6 @@
 package com.esharex.bigdata.service;
 
+import com.alibaba.fastjson.JSON;
 import com.esharex.bigdata.dao.UserInfoRepository;
 import com.esharex.bigdata.model.DeviceInfo;
 import com.esharex.bigdata.model.UserIndex;
@@ -11,12 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.sql.DataSource;
+import java.io.Console;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @program: bigdata
@@ -34,7 +42,7 @@ public class UserInfoService {
     @Autowired
     UserIndexService userIndexService;
 
-    public boolean addUserIndex(String tableName) {
+    public boolean addUserIndex(String tableName,Integer pageNum) {
         Thread thread2 = new Thread(() -> {
             int count = 0;
             //添加所以线程
@@ -49,6 +57,9 @@ public class UserInfoService {
                 int startNum = 0;
                 int limit = 1000;
                 int currentPag = 1;
+                if(pageNum!=null){
+                    currentPag=pageNum;
+                }
                 int pageCount = i % limit == 0 ? i / limit : i / limit + 1;
                 List<UserIndex> indexList = new ArrayList<>();
                 while (currentPag <= pageCount) {
@@ -56,6 +67,7 @@ public class UserInfoService {
                         Long time = System.currentTimeMillis();
                         String listSql = "select * from " + tableName + "   limit " + (currentPag - 1) * limit + "," + limit;
                         List<DeviceInfo> list = run.query(listSql, new BeanListHandler<DeviceInfo>(DeviceInfo.class));
+                        logger.info("查询数据库耗时"+ (System.currentTimeMillis() - time) / 1000.0 + "秒");
                         list.forEach(deviceInfo -> {
                             UserIndex index = new UserIndex();
                             index.setId(deviceInfo.getDeviceid());
@@ -67,15 +79,19 @@ public class UserInfoService {
                                 index.setSimtype(deviceInfo.getSimtype());
                             }
                             index.setAndroidid(deviceInfo.getAndroidid());
-                            if (deviceInfo.getBtmac().contains("%")) {
-                                index.setBtmac(URLDecoder.decode(deviceInfo.getBtmac()));
-                            } else {
-                                index.setBtmac(deviceInfo.getBtmac());
-                            }
-                            if (deviceInfo.getWlanmac().contains("%")) {
-                                index.setWlanmac(URLDecoder.decode(deviceInfo.getWlanmac()));
-                            } else {
-                                index.setWlanmac(deviceInfo.getWlanmac());
+                            try {
+                                if (deviceInfo.getBtmac().contains("%")) {
+                                    index.setBtmac(URLDecoder.decode(deviceInfo.getBtmac()));
+                                } else {
+                                    index.setBtmac(deviceInfo.getBtmac());
+                                }
+                                if (deviceInfo.getWlanmac().contains("%")) {
+                                    index.setWlanmac(URLDecoder.decode(deviceInfo.getWlanmac()));
+                                } else {
+                                    index.setWlanmac(deviceInfo.getWlanmac());
+                                }
+                            }catch (Exception ex){
+                                logger.error("mac地址解析错误btmac："+deviceInfo.getBtmac()+"    wlanmac:"+deviceInfo.getWlanmac());
                             }
                             index.setIp(deviceInfo.getIp());
                             index.setDevicetype(deviceInfo.getDevicetype());
@@ -108,8 +124,15 @@ public class UserInfoService {
         return true;
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        String s = "18%3A59%3A36%3A63%3A92%3A7D";
-        System.out.print(s.contains("%"));
+    public static void main(String[] args) throws UnsupportedEncodingException, ScriptException {
+//        String str1 = "(a >= 0 && a <= 5)";
+//
+//        String str = "43*(2 + 1.4)+2*32/(3-2.1)";
+//        ScriptEngineManager manager = new ScriptEngineManager();
+//        ScriptEngine engine = manager.getEngineByName("js");
+//        Object result = engine.eval(str);
+//        System.out.println("结果类型:" + result.getClass().getName() + ",计算结果:" + result);
+        System.out.print(URLDecoder.decode("02%3A00%3A00%3A00%3A00%3A00"));
+
     }
 }
