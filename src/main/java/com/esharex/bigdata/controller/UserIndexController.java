@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Iterator;
-import java.util.UUID;
+import java.util.List;
 
 /**
  * @program: bigdata
@@ -24,11 +24,13 @@ import java.util.UUID;
 public class UserIndexController {
     @Autowired
     UserIndexService userIndexService;
+
     @GetMapping("/add")
     @ResponseBody
-    protected  UserIndex addUserIndex(){
+    protected UserIndex addUserIndex() {
         UserIndex userIndex = new UserIndex();
-
+        String jstr = "{\"id\":\"11e4561aef081e0bd6cd28ba428e5065\",\"imei\":\"test\",\"devidshort\":\"357416916426248\",\"androidid\":\"3106435043d8724c\",\"wlanmac\":\"e0:dd:c0:5b:d3:c8\",\"btmac\":\"E0:DD:C0:5B:D3:C7\",\"phonenumber\":null,\"simtype\":null,\"devicetype\":\"vivo+V3Max+A\",\"ip\":\"116.7.218.216\",\"create_time\":\"2017-11-01 00:23:08.0\",\"update_time\":\"2017-11-01 02:37:08.0\"}";
+        userIndex = JSON.parseObject(jstr, UserIndex.class);
         return userIndexService.addUserIndex(userIndex);
     }
 
@@ -37,13 +39,33 @@ public class UserIndexController {
      */
     @GetMapping("/search")
     @ResponseBody
-    protected  JSONArray  search(String keyWords){
-        Iterable<UserIndex> list=userIndexService.search(keyWords);
-        JSONArray jsonArray=new JSONArray();
-        Iterator<UserIndex> it=list.iterator();
+    protected JSONArray search(String keyWords) {
+        Iterable<UserIndex> list = userIndexService.search(keyWords);
+        JSONArray jsonArray = new JSONArray();
+        Iterator<UserIndex> it = list.iterator();
         while (it.hasNext()) {
-                jsonArray.add(it.next());
+            jsonArray.add(it.next());
         }
         return jsonArray;
     }
+
+    /**
+     * @return
+     */
+    @GetMapping("/updateByDeviceId")
+    @ResponseBody
+    protected List<UserIndex> updateByDeviceId(String deviceId) {
+        return userIndexService.updateByDeviceId(deviceId);
+    }
+
+
+    /**
+     * @return
+     */
+    @GetMapping("/findByScroll")
+    @ResponseBody
+    protected void updateByDeviceId() {
+        userIndexService.findByScroll();
+    }
+
 }

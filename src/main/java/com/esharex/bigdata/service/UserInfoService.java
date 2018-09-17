@@ -1,6 +1,6 @@
 package com.esharex.bigdata.service;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.esharex.bigdata.dao.UserInfoRepository;
 import com.esharex.bigdata.model.DeviceInfo;
 import com.esharex.bigdata.model.UserIndex;
@@ -11,20 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.sql.DataSource;
-import java.io.Console;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @program: bigdata
@@ -72,21 +64,21 @@ public class UserInfoService {
                             UserIndex index = new UserIndex();
                             index.setId(deviceInfo.getDeviceid());
                             index.setImei(deviceInfo.getImei());
-                            if (deviceInfo.getPhonenumber() != null && !deviceInfo.getPhonenumber().equals("undefined")) {
+                            if (deviceInfo.getPhonenumber() != null && !"undefined".equals(deviceInfo.getPhonenumber())) {
                                 index.setPhonenumber(deviceInfo.getPhonenumber());
                             }
-                            if (deviceInfo.getSimtype() != null && !deviceInfo.getSimtype().equals("undefined")) {
+                            if (deviceInfo.getSimtype() != null && !"undefined".equals(deviceInfo.getSimtype())) {
                                 index.setSimtype(deviceInfo.getSimtype());
                             }
                             index.setAndroidid(deviceInfo.getAndroidid());
                             try {
                                 if (deviceInfo.getBtmac().contains("%")) {
-                                    index.setBtmac(URLDecoder.decode(deviceInfo.getBtmac()));
+                                    index.setBtmac(URLDecoder.decode(deviceInfo.getBtmac(),"UTF-8"));
                                 } else {
                                     index.setBtmac(deviceInfo.getBtmac());
                                 }
                                 if (deviceInfo.getWlanmac().contains("%")) {
-                                    index.setWlanmac(URLDecoder.decode(deviceInfo.getWlanmac()));
+                                    index.setWlanmac(URLDecoder.decode(deviceInfo.getWlanmac(),"UTF-8"));
                                 } else {
                                     index.setWlanmac(deviceInfo.getWlanmac());
                                 }
@@ -132,7 +124,7 @@ public class UserInfoService {
 //        ScriptEngine engine = manager.getEngineByName("js");
 //        Object result = engine.eval(str);
 //        System.out.println("结果类型:" + result.getClass().getName() + ",计算结果:" + result);
-        System.out.print(URLDecoder.decode("02%3A00%3A00%3A00%3A00%3A00"));
+        System.out.print(URLDecoder.decode("02%3A00%3A00%3A00%3A00%3A00","UTF-8"));
 
     }
 }

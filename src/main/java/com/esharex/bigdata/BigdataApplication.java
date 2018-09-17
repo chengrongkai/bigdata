@@ -8,6 +8,9 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * @author pengxiaokang
+ */
 @EnableTransactionManagement
 @ServletComponentScan
 @SpringBootApplication

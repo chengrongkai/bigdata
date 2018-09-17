@@ -5,9 +5,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://117.50.15.237:33307/d2eam_sdk?useUnicode=true&characterEncoding=utf8
-    username: pengxiaokang
-    password: 2hn6vyyWPo8E8J
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: pxk
     initialSize: 1
     minIdle: 3
     maxActive: 20

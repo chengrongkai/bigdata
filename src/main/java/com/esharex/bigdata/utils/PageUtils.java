@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * @author pengxiaokang
  */
 public class PageUtils implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -17,12 +18,8 @@ public class PageUtils implements Serializable {
 	 * 
 	 * @param list
 	 *            列表数据
-	 * @param totalCount
+	 * @param total
 	 *            总记录数
-	 * @param pageSize
-	 *            每页记录数
-	 * @param currPage
-	 *            当前页数
 	 */
 	public PageUtils(List<?> list, int total) {
 		this.rows = list;

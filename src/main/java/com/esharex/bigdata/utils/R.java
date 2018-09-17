@@ -3,6 +3,9 @@ package com.esharex.bigdata.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author pengxiaokang
+ */
 public class R extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 	

@@ -1,10 +1,13 @@
+logging:
+  level:
+    com: debug
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://39.106.99.141:6033/baogang_en_online?useUnicode=true&characterEncoding=utf8
-    username: root
-    password: Srv4Sht2Ruc_90von71
+    url: jdbc:mysql://117.50.15.237:33307/d2eam_sdk?useUnicode=true&characterEncoding=utf8
+    username: pengxiaokang
+    password: 2hn6vyyWPo8E8J
     initialSize: 1
     minIdle: 3
     maxActive: 20
@@ -27,3 +30,12 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     # 合并多个DruidDataSource的监控数据
     #useGlobalDataSourceStat: true
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/onlinePreview/**
+converted:
+  file:
+    charset: GBK 
+office:
+  home: C:\Program Files (x86)\OpenOffice 4
+simText: txt,html,xml,java,properties,sql
+media: mp3,mp4,flv,rmvb
